@@ -1,0 +1,45 @@
+---
+- name : Install Docker and run Nginx container
+  hosts : all
+  become : yes
+  tasks:
+   - name : docker install
+     apt: 
+       name: docker.io
+       state : latest
+       update_cache: yes
+   - name : Enable and start Docker service
+     service :
+        name : docker
+        state : started
+        enabled : yes
+   - name : create a file
+     file:
+        path : /var/www/my-nginx
+        state : directory
+        owner : ubuntu
+        group : ubuntu
+        mode  : "0755"
+
+   - name:  create index.html
+     copy :
+       dest : /var/www/my-nginx/index.html
+       content: |
+         <h1>Hello from my EC2-hosted Nginx!</h1>
+       owner: ubuntu
+       group: ubuntu
+       mode: "0644"
+   - name : run nignx
+     community.docker.docker_container:
+         name: nginx_service
+         image : nginx:latest
+         state : started
+         restart_policy: always
+         ports: 
+            - "80:80"
+         volumes: 
+           - /var/www/my-nginx:/usr/share/nginx/html:ro
+   
+
+
+
