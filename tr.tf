@@ -106,4 +106,7 @@ resource "aws_instance" "web" {
   tags = {
     Name = "HelloWorld1"
   }
+ output "aws_instances" {
+  value = [for instance in aws_instance.this : instance.public_ip]
+ }
 }
