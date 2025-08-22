@@ -107,6 +107,6 @@ resource "aws_instance" "web" {
     Name = "HelloWorld1"
   }
 output "aws_instances" {
-  value = [for instance in aws_instance.this : instance.public_ip]
+  value = [aws_instance.web.public_ip]
  }
 }
